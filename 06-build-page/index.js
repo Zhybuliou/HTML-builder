@@ -1,16 +1,31 @@
 const fs = require('fs');
 const path = require('path');
-//create folder
-fs.rm(path.join(__dirname, 'project-dist'),{ recursive: true, force: true }, err => {
-  if(err) {console.log(err);}
-});
+
 setTimeout(() => {
   fs.mkdir(path.join(__dirname, 'project-dist'),{ recursive: true, force: true }, err => {
     if(err) {console.log(err);}
   });
-},500);
-// end create folder.
-// read 
+},100);
+setTimeout(() => {
+  fs.mkdir(path.join(__dirname, 'project-dist', 'assets'),{ recursive: true, force: true }, err => {
+    if(err) {console.log(err);}
+  });
+},200);
+setTimeout(() => {
+  fs.mkdir(path.join(__dirname, 'project-dist', 'assets', 'fonts'),{ recursive: true, force: true }, err => {
+    if(err) {console.log(err);}
+  });
+},300);
+setTimeout(() => {
+  fs.mkdir(path.join(__dirname, 'project-dist', 'assets', 'img'),{ recursive: true, force: true }, err => {
+    if(err) {console.log(err);}
+  });
+},300);
+setTimeout(() => {
+  fs.mkdir(path.join(__dirname, 'project-dist', 'assets', 'svg'),{ recursive: true, force: true }, err => {
+    if(err) {console.log(err);}
+  });
+},300);
 fs.readdir(__dirname, (err, files) => {
   let footer = '';
   let header = '';
@@ -32,7 +47,36 @@ fs.readdir(__dirname, (err, files) => {
       },400);
     }
     else if(file === 'assets'){
-      console.log(true);
+      fs.readdir(path.join(__dirname, file), (err, files) => {
+        if(err){console.log(err);}
+        files.forEach(nameFile => {
+          setTimeout(() => {
+            fs.readdir(path.join(__dirname,file, nameFile), (err, files) => {
+              if(err){console.log(err);}
+              files.forEach(file => {
+                if(path.extname(file) === '.woff2'){
+                  fs.copyFile(path.join(__dirname,'assets','fonts',`${file}`), 
+                    path.join(__dirname,'project-dist','assets','fonts',`${file}`), (err) =>{
+                      if(err){console.log(err);}
+                    });
+                }
+                else if(path.extname(file) === '.svg'){
+                  fs.copyFile(path.join(__dirname,'assets','svg',`${file}`), 
+                    path.join(__dirname,'project-dist','assets','svg',`${file}`), (err) =>{
+                      if(err){console.log(err);}
+                    });
+                }
+                else if(path.extname(file) === '.jpg'){
+                  fs.copyFile(path.join(__dirname,'assets','img',`${file}`), 
+                    path.join(__dirname,'project-dist','assets','img',`${file}`), (err) =>{
+                      if(err){console.log(err);}
+                    });
+                }
+              });
+            });
+          },600);
+        });
+      });
     }
     else if(file === 'components'){
       fs.readdir(path.join(__dirname, file), (err, files) => {
@@ -72,8 +116,16 @@ fs.readdir(__dirname, (err, files) => {
       });
     }
   });
-  // bundle section 
-  setTimeout(()=>{
+  setTimeout(()=>{ 
+    
+    fs.unlink(path.join(__dirname,'project-dist', 'index.html'), (err) => {
+      if (err) {
+        err;
+      }});
+    fs.unlink(path.join(__dirname,'project-dist', 'style.css'), (err) => {
+      if (err) {
+        err;
+      }});
     fs.appendFile(
       path.join(__dirname,'project-dist', 'index.html'),
       bundleHtml,
@@ -89,6 +141,4 @@ fs.readdir(__dirname, (err, files) => {
       }
     );
   },600);
-  // end bundle section
 });
-//end read
