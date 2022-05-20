@@ -32,6 +32,7 @@ fs.readdir(__dirname, (err, files) => {
   let articles = '';
   let bundleHtml = '';
   let bundleCss = '';
+  let someTag = {};
   if(err){console.log(err);}
   files.forEach( file => {
     if(file === 'template.html'){
@@ -42,6 +43,9 @@ fs.readdir(__dirname, (err, files) => {
           data = data.replace('{{header}}',header);
           data = data.replace('{{articles}}', articles);
           data = data.replace('{{footer}}', footer);
+          for(let key in someTag){
+            data = data.replace(`{{${key}}}`, someTag[key]);
+          }
           bundleHtml = data;
         });
       },400);
@@ -98,6 +102,12 @@ fs.readdir(__dirname, (err, files) => {
             const readStream = fs.createReadStream(path.join(__dirname,'components', file));
             readStream.on('data', (chunk) => {
               header = chunk.toString();
+            });
+          }
+          else{
+            const readStream = fs.createReadStream(path.join(__dirname,'components', file));
+            readStream.on('data', (chunk) => {
+              someTag[file.split('.')[0]] =  chunk.toString();
             });
           }
         });
