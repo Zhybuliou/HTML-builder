@@ -26,13 +26,9 @@ function copyDir(){
               });
             }
           });
-    
-    
         }
       });
     });
   });
-
-
 }
 copyDir();
