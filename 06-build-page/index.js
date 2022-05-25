@@ -24,9 +24,9 @@ let bundleHtml = '';
 let bundleCss = '';
 let someTag = {};
 
-fs.readdir(__dirname, (err, files) => {
+fs.readdir(__dirname, async (err, files) => {
   if(err){console.log(err);}
-  files.forEach( file => {
+  await files.forEach( file => {
     if(file === 'template.html'){
       fs.readdir(path.join(__dirname,  'components'), (err, files) => {
         if(err){console.log(err);}
